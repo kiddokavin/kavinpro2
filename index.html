@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L. Kavin — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D1117;
+    --surface:#161D2B;
+    --surface-2:#1B2333;
+    --ink:#E8E6E1;
+    --ink-dim:#9CA6B5;
+    --copper:#C97D3C;
+    --copper-bright:#E2965A;
+    --teal:#5FA8A0;
+    --line:rgba(232,230,225,0.10);
+    --max:980px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 28px;}
+
+  :focus-visible{outline:2px solid var(--copper-bright); outline-offset:3px;}
+
+  /* ---------------- circuit rail (signature element) ---------------- */
+  .rail{
+    position:absolute;
+    left:50%;
+    top:0; bottom:0;
+    width:1px;
+    background:linear-gradient(to bottom, transparent, var(--line) 4%, var(--line) 96%, transparent);
+    z-index:0;
+  }
+  .rail-wrap{position:relative;}
+
+  .node{
+    position:relative;
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--copper);
+    margin:0 auto 18px;
+    box-shadow:0 0 0 4px rgba(201,125,60,0.12);
+  }
+
+  /* ---------------- nav ---------------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(13,17,23,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    max-width:var(--max); margin:0 auto;
+  }
+  .logo{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px; letter-spacing:0.04em;
+    color:var(--copper-bright);
+  }
+  .logo span{color:var(--ink-dim);}
+  .navlinks{display:flex; gap:28px; list-style:none;}
+  .navlinks a{
+    font-size:13px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--ink-dim); text-decoration:none;
+    transition:color .2s;
+  }
+  .navlinks a:hover{color:var(--copper-bright);}
+  .navtoggle{display:none; background:none; border:none; color:var(--ink); font-size:22px; cursor:pointer;}
+
+  @media (max-width:680px){
+    .navlinks{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition:max-height .25s ease;
+    }
+    .navlinks.open{max-height:280px;}
+    .navlinks a{display:block; padding:14px 28px; border-top:1px solid var(--line);}
+    .navtoggle{display:block;}
+  }
+
+  /* ---------------- hero ---------------- */
+  .hero{
+    padding:96px 0 80px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1.3fr 0.7fr;
+    gap:56px;
+    align-items:center;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px; color:var(--teal);
+    letter-spacing:0.06em;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:20px;
+  }
+  .eyebrow::before{
+    content:""; width:7px; height:7px; border-radius:50%;
+    background:var(--teal); box-shadow:0 0 0 3px rgba(95,168,160,0.18);
+  }
+  .hero h1{
+    font-size:clamp(36px,5.5vw,58px);
+    font-weight:700;
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    margin-bottom:18px;
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--copper-bright);
+  }
+  .hero p.lead{
+    font-size:18px; color:var(--ink-dim); max-width:480px; margin-bottom:30px;
+  }
+  .btnrow{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px; letter-spacing:0.03em;
+    padding:13px 22px;
+    border-radius:3px;
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s, border-color .15s, background .15s;
+    border:1px solid var(--line);
+  }
+  .btn-primary{background:var(--copper); color:#0D1117; border-color:var(--copper); font-weight:500;}
+  .btn-primary:hover{background:var(--copper-bright); transform:translateY(-2px);}
+  .btn-ghost{color:var(--ink); }
+  .btn-ghost:hover{border-color:var(--copper); color:var(--copper-bright); transform:translateY(-2px);}
+
+  .portrait-frame{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px;
+    background:var(--surface);
+  }
+  .portrait-frame img{
+    border-radius:3px;
+    filter:saturate(0.92) contrast(1.04);
+  }
+  .portrait-frame .tag{
+    position:absolute; bottom:-12px; left:24px;
+    background:var(--copper); color:#0D1117;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:0.05em;
+    padding:5px 10px; border-radius:3px;
+  }
+  .corner{position:absolute; width:14px; height:14px; border:1px solid var(--copper);}
+  .corner.tl{top:4px; left:4px; border-right:none; border-bottom:none;}
+  .corner.br{bottom:4px; right:4px; border-left:none; border-top:none;}
+
+  @media (max-width:780px){
+    .hero .wrap{grid-template-columns:1fr; gap:40px;}
+    .hero{padding:64px 0 56px;}
+    .portrait-frame{max-width:280px;}
+  }
+
+  /* ---------------- section scaffolding ---------------- */
+  section{padding:64px 0; position:relative;}
+  .section-head{margin-bottom:40px; text-align:center;}
+  .section-head .eyebrow{justify-content:center;}
+  .section-head h2{font-size:clamp(26px,3.6vw,34px); font-weight:700;}
+  .section-head p{color:var(--ink-dim); max-width:540px; margin:10px auto 0; font-size:15px;}
+
+  .divider{
+    border:none; border-top:1px solid var(--line); margin:0;
+  }
+
+  /* ---------------- about ---------------- */
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:26px 28px;
+  }
+  .card h3{
+    font-size:13px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--copper-bright); margin-bottom:14px;
+    font-family:'JetBrains Mono',monospace; font-weight:500;
+  }
+  .card p{color:var(--ink-dim); font-size:15px;}
+  .lang-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;}
+  .pill{
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    border:1px solid var(--line); border-radius:20px;
+    padding:6px 14px; color:var(--ink-dim);
+  }
+  @media (max-width:780px){.about-grid{grid-template-columns:1fr;}}
+
+  /* ---------------- timeline (education) ---------------- */
+  .tl{position:relative; padding-left:28px;}
+  .tl::before{
+    content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px;
+    background:var(--line);
+  }
+  .tl-item{position:relative; padding-bottom:34px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:""; position:absolute; left:-28px; top:4px;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--teal);
+  }
+  .tl-year{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); margin-bottom:4px; display:block;}
+  .tl-item h4{font-size:17px; font-weight:600; margin-bottom:3px;}
+  .tl-item .meta{font-size:13.5px; color:var(--ink-dim);}
+
+  /* ---------------- skills ---------------- */
+  .skills-wrap{display:grid; grid-template-columns:1fr 1fr; gap:36px;}
+  .skill-row{display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line);}
+  .skill-row:last-child{border-bottom:none;}
+  .skill-name{font-size:15px;}
+  .dots{display:flex; gap:5px;}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--line);}
+  .dot.on{background:var(--copper);}
+  @media (max-width:780px){.skills-wrap{grid-template-columns:1fr;}}
+
+  /* ---------------- project ---------------- */
+  .project-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:34px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:28px;
+    align-items:flex-start;
+  }
+  .project-icon{
+    width:52px; height:52px; border-radius:8px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .project-icon svg{width:26px; height:26px;}
+  .project-card h3{font-size:20px; font-weight:600; margin-bottom:8px;}
+  .project-card p{color:var(--ink-dim); font-size:15px; margin-bottom:14px;}
+  .tag-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .tag{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    background:rgba(95,168,160,0.10); color:var(--teal);
+    border:1px solid rgba(95,168,160,0.25);
+    padding:4px 10px; border-radius:4px;
+  }
+  @media (max-width:600px){.project-card{grid-template-columns:1fr;}}
+
+  /* ---------------- certifications ---------------- */
+  .cert-toggle-row{display:flex; justify-content:center; margin-top:28px;}
+  .cert-toggle{
+    font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--copper-bright); background:none; border:1px solid var(--line);
+    border-radius:4px; padding:10px 18px; cursor:pointer;
+  }
+  .cert-toggle:hover{border-color:var(--copper);}
+  .cert-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  .cert-item{
+    display:flex; gap:12px; align-items:flex-start;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:6px; padding:14px 16px;
+    font-size:14px;
+  }
+  .cert-item .num{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--copper);
+    flex-shrink:0; padding-top:2px;
+  }
+  .cert-hidden{display:none;}
+  @media (max-width:680px){.cert-grid{grid-template-columns:1fr;}}
+
+  /* ---------------- certificate image gallery ---------------- */
+  .cert-gallery{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+  .cert-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    transition:border-color .2s, transform .2s;
+  }
+  .cert-card:hover{border-color:var(--copper); transform:translateY(-3px);}
+  .cert-thumb{
+    width:100%;
+    aspect-ratio:4/3;
+    background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+  .cert-thumb img{width:100%; height:100%; object-fit:cover;}
+  .cert-thumb.placeholder{
+    flex-direction:column; gap:8px;
+    color:var(--ink-dim);
+  }
+  .cert-thumb.placeholder svg{width:28px; height:28px; opacity:0.5;}
+  .cert-thumb.placeholder span{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    letter-spacing:0.03em; opacity:0.6; padding:0 10px; text-align:center;
+  }
+  .cert-card-label{
+    padding:13px 15px;
+    font-size:13.5px;
+    border-top:1px solid var(--line);
+  }
+  .cert-card-label .num{color:var(--copper); font-family:'JetBrains Mono',monospace; font-size:11px; margin-right:6px;}
+  @media (max-width:780px){.cert-gallery{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:480px){.cert-gallery{grid-template-columns:1fr;}}
+
+  /* ---------------- contact ---------------- */
+  .contact-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:48px;
+    text-align:center;
+  }
+  .contact-card h2{font-size:clamp(24px,3.4vw,32px); margin-bottom:12px;}
+  .contact-card p{color:var(--ink-dim); margin-bottom:30px; max-width:440px; margin-left:auto; margin-right:auto;}
+  .contact-list{display:flex; flex-wrap:wrap; justify-content:center; gap:14px;}
+  .contact-pill{
+    display:flex; align-items:center; gap:9px;
+    font-family:'JetBrains Mono',monospace; font-size:13.5px;
+    border:1px solid var(--line); border-radius:30px;
+    padding:11px 18px;
+    text-decoration:none; color:var(--ink);
+    transition:border-color .2s, color .2s;
+  }
+  .contact-pill:hover{border-color:var(--copper); color:var(--copper-bright);}
+  .contact-pill svg{width:15px; height:15px; flex-shrink:0;}
+
+  footer{
+    padding:30px 0 44px; text-align:center;
+    color:var(--ink-dim); font-size:13px;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">L_KAVIN<span>.dev</span></div>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#project">Project</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/kavin-loganathan-524598338/" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+    </ul>
+    <button class="navtoggle" id="navtoggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow mono">AVAILABLE FOR INTERNSHIPS</div>
+      <h1>Building at the<br>edge of <em>circuits</em><br>&amp; <em>code</em>.</h1>
+      <p class="lead">I'm Kavin — an Electronics &amp; Communication Engineering student from Karur, Tamil Nadu, turning technical curiosity into clean, visually considered work across cloud, security, and design tools.</p>
+      <div class="btnrow">
+        <a href="#contact" class="btn btn-primary">Get in touch →</a>
+        <a href="#certifications" class="btn btn-ghost">View certifications</a>
+        <a href="https://www.linkedin.com/in/kavin-loganathan-524598338/" target="_blank" rel="noopener" class="btn btn-ghost btn-linkedin">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"></path></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+    <div class="portrait-frame">
+      <div class="corner tl"></div>
+      <div class="corner br"></div>
+      <img src="profile.jpeg" alt="Portrait of L. Kavin">
+      <div class="tag">KARUR, TAMIL NADU</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">01 — ABOUT</div>
+      <h2>Objective</h2>
+      <p>To leverage creativity and design skills to develop visually compelling, effective work that meets and exceeds expectations.</p>
+    </div>
+    <div class="about-grid">
+      <div class="card">
+        <h3>Focus areas</h3>
+        <p>Currently pursuing B.E. in Electronics &amp; Communication Engineering, with hands-on exposure to cloud platforms (AWS, Azure), database fundamentals, Java programming, cybersecurity simulations, and design tools like Canva — building toward a career where engineering precision meets visual design sense.</p>
+      </div>
+      <div class="card">
+        <h3>Languages</h3>
+        <div class="lang-row">
+          <span class="pill">English</span>
+          <span class="pill">Tamil</span>
+          <span class="pill">Hindi (conversational)</span>
+        </div>
+        <p style="margin-top:18px;">Comfortable working and communicating across all three.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="education">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">02 — EDUCATION</div>
+      <h2>Academic background</h2>
+    </div>
+    <div class="tl">
+      <div class="tl-item">
+        <span class="tl-year">2024 — 2028</span>
+        <h4>B.E., Electronics and Communication Engineering</h4>
+        <p class="meta">Chettinad College of Engineering · CGPA 6</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">2024</span>
+        <h4>Higher Secondary Certificate (HSC)</h4>
+        <p class="meta">Cheran Matric Higher Secondary School · 55%</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">2022</span>
+        <h4>SSLC</h4>
+        <p class="meta">Sri Ramakrishna Matric School, Karur · 60.6%</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">03 — SKILLS</div>
+      <h2>Technical &amp; soft skills</h2>
+    </div>
+    <div class="skills-wrap">
+      <div class="card">
+        <h3>Technical</h3>
+        <div class="skill-row"><span class="skill-name">Canva Editing</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">MS Word</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">MS Excel</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">Typing</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">Website Creation</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>
+      </div>
+      <div class="card">
+        <h3>Soft skills</h3>
+        <div class="skill-row"><span class="skill-name">Communication</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">Teamwork</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></div>
+        <div class="skill-row"><span class="skill-name">Time Management</span><span class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span></div>
+        <p style="margin-top:18px; font-size:13px;">Beginner-level proficiency noted for Website Creation per current coursework.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="project">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">04 — PROJECT</div>
+      <h2>Mini project</h2>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C97D3C" stroke-width="1.6">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          <path d="M10 6.5h4M6.5 10v4M17.5 10v4M10 17.5h4"></path>
+        </svg>
+      </div>
+      <div>
+        <h3>Secure Healthcare Networking in Cisco</h3>
+        <p>A networking project simulating a secure healthcare data network using Cisco tools — applying access control and network segmentation principles to protect sensitive patient information in transit.</p>
+        <div class="tag-row">
+          <span class="tag">Cisco Packet Tracer</span>
+          <span class="tag">Network Security</span>
+          <span class="tag">Healthcare IT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="certifications">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">05 — CERTIFICATIONS</div>
+      <h2>Self-driven learning</h2>
+      <p>21 certifications across cloud computing, cybersecurity, databases, and programming — completed independently alongside coursework.</p>
+    </div>
+    <div class="cert-gallery" id="certGrid">
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-01-aws-s3-basics.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-01-aws-s3-basics.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">01</span>AWS S3 Basics</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-02-nosql-intro.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-02-nosql-intro.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">02</span>Introduction to NoSQL Databases</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-03-dbms-part1.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-03-dbms-part1.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">03</span>Database Management System — Part 1</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-04-dbms-part2.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-04-dbms-part2.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">04</span>Database Management System — Part 2</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-05-dsa-java.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-05-dsa-java.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">05</span>Data Structures and Algorithms using Java</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-thumb placeholder" data-src="certs/cert-06-java-fundamentals.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-06-java-fundamentals.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">06</span>Java Programming Fundamentals</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-07-cloudfront.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-07-cloudfront.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">07</span>AWS CloudFront: Multiple S3 Buckets</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-08-azure-cognitive-vision.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-08-azure-cognitive-vision.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">08</span>Computer Vision App — Azure Cognitive Services</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-09-wordpress-website.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-09-wordpress-website.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">09</span>Build a Free Website with WordPress</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-10-java-foundation.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-10-java-foundation.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">10</span>Java Foundation Certification</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-11-canva-course-collateral.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-11-canva-course-collateral.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">11</span>Use Canva to Design Digital Course Collateral</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-12-java-azure.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-12-java-azure.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">12</span>Programming using Java — Microsoft Azure</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-13-word-to-pdf-sharepoint.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-13-word-to-pdf-sharepoint.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">13</span>Convert Word to PDF — SharePoint &amp; Power Automate</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-14-deloitte-cyber.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-14-deloitte-cyber.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">14</span>Cyber Job Simulation — Deloitte</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-15-ibm-watson.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-15-ibm-watson.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">15</span>Smart Business Assistants — IBM Watson</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-16-azure-iot-hub.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-16-azure-iot-hub.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">16</span>Getting Started with Azure IoT Hub</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-17-excel-data.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-17-excel-data.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">17</span>Finding, Sorting &amp; Filtering Data in Excel</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-18-tn-employability.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-18-tn-employability.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">18</span>Employability Skills — TN Government</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-19-tata-cybersecurity.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-19-tata-cybersecurity.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">19</span>Cybersecurity Analyst Job Simulation — TATA</div>
+      </div>
+      <div class="cert-card cert-hidden">
+        <div class="cert-thumb placeholder" data-src="certs/cert-20-wix-website.jpg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>cert-20-wix-website.jpg</span>
+        </div>
+        <div class="cert-card-label"><span class="num">20</span>Develop a Company Website with Wix</div>
+      </div>
+    </div>
+    <div class="cert-toggle-row">
+      <button class="cert-toggle mono" id="certToggleBtn" aria-expanded="false">Show all 20 certifications ↓</button>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-card">
+      <h2>Let's connect</h2>
+      <p>Open to internships and entry-level roles where engineering fundamentals and design sense both matter. Reach out below.</p>
+      <div class="contact-list">
+        <a class="contact-pill" href="mailto:kavinlccet@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+          kavinlccet@gmail.com
+        </a>
+        <a class="contact-pill" href="tel:+919442218610">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"></path></svg>
+          +91 94422 18610
+        </a>
+        <a class="contact-pill" href="https://www.linkedin.com/in/kavin-loganathan-524598338/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"></path></svg>
+          LinkedIn Profile
+        </a>
+        <span class="contact-pill" style="cursor:default;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+          Karur, Tamil Nadu
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  L. Kavin — built with circuit-board precision.
+</footer>
+
+<script>
+  const toggle = document.getElementById('navtoggle');
+  const links = document.getElementById('navlinks');
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    links.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  const certBtn = document.getElementById('certToggleBtn');
+  const hiddenCerts = document.querySelectorAll('.cert-hidden');
+  certBtn.addEventListener('click', () => {
+    const expanded = certBtn.getAttribute('aria-expanded') === 'true';
+    hiddenCerts.forEach(c => c.style.display = expanded ? 'none' : 'block');
+    certBtn.textContent = expanded ? 'Show all 20 certifications ↓' : 'Show fewer ↑';
+    certBtn.setAttribute('aria-expanded', String(!expanded));
+  });
+
+  // Try loading a real image into each cert thumbnail; keep the placeholder if it 404s
+  document.querySelectorAll('.cert-thumb[data-src]').forEach(thumb => {
+    const src = thumb.getAttribute('data-src');
+    const probe = new Image();
+    probe.onload = () => {
+      thumb.classList.remove('placeholder');
+      thumb.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      thumb.appendChild(img);
+    };
+    probe.src = src;
+  });
+</script>
+
+</body>
+</html>
